@@ -120,9 +120,9 @@ def ShowMembers () :
 
 def Barrow () :
   ShowMembers()
-  person_barrowing = int(input("Enter national code of the person who wants to barrow book : "))
+  person_barrowing = input("Enter national code of the person who wants to barrow book : ")
   ShowBooks()
-  book_barrowed = int(input("Enter shaback of the book which barrowed : "))
+  book_barrowed = input("Enter shaback of the book which barrowed : ")
 
   mydb = mysql.connector.connect(
     host="localhost",
@@ -131,7 +131,7 @@ def Barrow () :
     database="librarybeta"
   )
   mycursor = mydb.cursor()
-  mycursor.execute("SELECT memberid FROM members WHERE nationalcode = person_barrowing ")
+  mycursor.execute("SELECT memberid FROM members WHERE nationalcode = "+person_barrowing )
   myresult_members = mycursor.fetchall()
 
   mydb = mysql.connector.connect(
@@ -141,7 +141,7 @@ def Barrow () :
     database="librarybeta"
   )
   mycursor = mydb.cursor()
-  mycursor.execute("SELECT bookid FROM books WHERE shaback = book_barrowed ")
+  mycursor.execute("SELECT bookid FROM books WHERE shaback = "+book_barrowed )
   myresult_books = mycursor.fetchall()
 
   mydb = mysql.connector.connect(
@@ -152,7 +152,7 @@ def Barrow () :
   )
   mycursor = mydb.cursor()
   sql = "INSERT INTO barrow (memberid, bookid) VALUES (%s, %s)"
-  val = (myresult_members, myresult_books)
+  val = (myresult_members[0][0], myresult_books[0][0])
   mycursor.execute(sql, val)
   mydb.commit()
   print(mycursor.rowcount, "record inserted.")
@@ -173,10 +173,8 @@ def Barrow () :
   mycursor.execute(sql, adr)
 
   myresult = mycursor.fetchall()
-  myresult = int(myresult) - 1
+  myresult = int(myresult[0][0]) - 1
 
-  for x in myresult:
-    print(x)
 
 def ShowBarrow () :
   mydb = mysql.connector.connect(
